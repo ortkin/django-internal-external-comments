@@ -1,6 +1,5 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
 *.py[cod]
+__pycache__
 *$py.class
 
 # C extensions
@@ -50,10 +49,16 @@ coverage.xml
 *.mo
 *.pot
 
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
 # Django stuff:
 *.log
 local_settings.py
 
+# Pycharm/Intellij
+.idea
 # Flask stuff:
 instance/
 .webassets-cache
@@ -61,8 +66,8 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
-docs/_build/
+# Sphinx
+docs/_build
 
 # PyBuilder
 target/

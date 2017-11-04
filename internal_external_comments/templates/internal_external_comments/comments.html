@@ -1,0 +1,18 @@
+{% load static comments %}
+<script src="{% static "internal_external_comments/js/internal_external_comments.js" %}"></script>
+    
+<div id="comments">
+    {% get_comment_count for object as comment_count %}
+    <span id="comment_count" style="display: none">{{ comment_count }}</span>
+    <hr/>
+
+    <div class="comment">
+        {% if comment_count %}
+            <div id="comment-list">
+            {% include "internal_external_comments/list.html" with object=object %}
+            </div>
+        {% endif %}
+        <hr/>
+        {% include "internal_external_comments/form.html" with object=object form=form %}
+    </div>
+</div>

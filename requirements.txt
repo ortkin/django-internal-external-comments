@@ -1,0 +1,3 @@
+django-model-utils>=2.0
+# Additional requirements go here
+django-contrib-comments==1.8.0
