@@ -1,0 +1,19 @@
+.comment-item{
+    color: #000;
+    min-height:20px;
+    padding:19px;
+    margin-bottom:20px;
+    border-radius:4px;
+    -webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.05);
+    box-shadow:inset 0 1px 1px rgba(0,0,0,.05)
+}
+
+.comment-internal{
+    background-color: #fcf8e3;
+    border:1px solid #faebcc;
+}
+
+.comment-external{
+    background-color:#f5f5f5;
+    border:1px solid #e3e3e3;
+}

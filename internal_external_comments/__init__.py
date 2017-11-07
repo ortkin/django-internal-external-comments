@@ -1,6 +1,7 @@
 """
 These are required from django_comments app
 """
+__version__ = '0.1.0'
 
 
 def get_model():

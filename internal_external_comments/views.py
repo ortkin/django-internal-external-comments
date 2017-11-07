@@ -1,5 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+
+from django_comments import views as comments_views
 
 from internal_external_comments.models import InternalExternalComment
 from internal_external_comments.forms import InternalExternalCommentForm
@@ -33,25 +35,39 @@ class AjaxableResponseMixin(object):
 
 
 # Create your views here.
-class CommentDetail(AjaxableResponseMixin, DetailView):
-    template_name = "internal_external_comments/detail.html"
+class CommentDetailView(AjaxableResponseMixin, DetailView):
+    template_name = "internal_external_comments/comment.html"
     model = InternalExternalComment
     fields = '__all__'
 
 
-class CommentCreate(AjaxableResponseMixin, CreateView):
+class CommentCreateView(AjaxableResponseMixin, CreateView):
     template_name = 'internal_external_comments/form.html'
     model = InternalExternalComment
     form_class = InternalExternalCommentForm
 
+    def post(self, request, *args, **kwargs):
+        comments_views.post_comment(request)
 
-class CommentUpdate(AjaxableResponseMixin, UpdateView):
+
+class CommentUpdateView(AjaxableResponseMixin, UpdateView):
     template_name = 'internal_external_comments/form.html'
     model = InternalExternalComment
     form_class = InternalExternalCommentForm
 
+    def form_valid(self, form):
+        if not self.object.user:
+            return HttpResponse('not allowed')
+        else:
+            if (self.request.user.is_authenticated and
+                    self.object.user == self.request.user):
+                form.save()
+                return super(CommentUpdateView, self).form_valid(form)
+            else:
+                return HttpResponse('not authenticated')
 
-class CommentDelete(AjaxableResponseMixin, DeleteView):
+
+class CommentDeleteView(AjaxableResponseMixin, DeleteView):
     pass
     # def get_object(self, queryset=None):
     #     """ Hook to ensure object is owned by request.user. """
@@ -61,7 +77,7 @@ class CommentDelete(AjaxableResponseMixin, DeleteView):
     #     return obj
 
 
-class CommentList(AjaxableResponseMixin, ListView):
+class CommentListView(AjaxableResponseMixin, ListView):
     model = InternalExternalComment
     template_name = 'internal_external_comments/list.html'
     fields = '__all__'
@@ -74,7 +90,7 @@ class CommentObjectListView(ListView):
 
     def get_queryset(self):
         return InternalExternalComment.objects.filter(
-            django_content_type__app_label=self.kwargs['app_label'],
-            django_content_type__model=self.kwargs['model'],
+            content_type__app_label=self.kwargs['app_label'],
+            content_type__model=self.kwargs['model'],
             object_pk=self.kwargs['object_pk'],
         )

@@ -1,5 +1,6 @@
 {% load static comments %}
-<script src="{% static "internal_external_comments/js/internal_external_comments.js" %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'internal_external_comments/css/internal_external_comments.css' %}" />
+<script src="{% static 'internal_external_comments/js/internal_external_comments.js' %}"></script>
     
 <div id="comments">
     {% get_comment_count for object as comment_count %}

@@ -1,12 +1,8 @@
 from django.test import TestCase
 import django_comments as comments
+from django.contrib.sites.models import Site
 
 from internal_external_comments.models import InternalExternalComment
-
-try:
-    import jinja2
-except ImportError:
-    jinja2 = None
 
 
 class InternalExternalModelTests(TestCase):
@@ -41,3 +37,22 @@ class InternalExternalModelTests(TestCase):
         cob = comments.get_model()
         comment = cob.objects.get(id=1)
         self.assertEqual(comment.is_internal, True)
+
+    def test_comment_str(self):
+        cob = comments.get_model()
+        comment = cob.objects.get(id=1)
+        self.assertTrue(str(comment).startswith("Frodo Baggins:"))
+
+    def test_manager_valid(self):
+        cob = comments.get_model()
+        self.assertTrue(cob.objects.valid())
+
+    def test_manager_site(self):
+        cob = comments.get_model()
+        filtered = cob.objects.for_site(site=Site.objects.get_current())
+        self.assertEqual(filtered.count(), 1)
+
+    def test_manager_site_none(self):
+        cob = comments.get_model()
+        filtered = cob.objects.for_site(site=None)
+        self.assertEqual(filtered.count(), 1)

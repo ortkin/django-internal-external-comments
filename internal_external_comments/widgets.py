@@ -8,6 +8,7 @@ from django.utils.safestring import mark_safe
 class InternalExternalTextBoxWidget(forms.Textarea):
 
     def __init__(self, *args, **kwargs):
+        self.internal_external = kwargs.pop('internal_external', "internal")
         super(InternalExternalTextBoxWidget, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):
@@ -19,18 +20,25 @@ class InternalExternalTextBoxWidget(forms.Textarea):
         if final_attrs.get('rows', None) is None:
             final_attrs['rows'] = 3
         if final_attrs.get('class', None) is None:
-            final_attrs['class'] = 'internal_external_editor internal_active form-control'
+            final_attrs['class'] = 'internal_external_editor form-control'
         else:
             if 'form-control' not in final_attrs.get('class'):
                 # add in form control bootstrap tag if not there just to get some initial styling
                 final_attrs['class'] = ' '.join(final_attrs['class'].split(' ') + ['form-control'])
             final_attrs['class'] = ' '.join(final_attrs['class'].split(' ') +
-                                            ['internal_external_editor internal_external_editor_active'])
+                                            ['internal_external_editor'])
+        if self.internal_external == 'internal':
+            final_attrs['class'] = ' '.join(final_attrs['class'].split(' ') +
+                                            ['internal_external_editor_internal'])
+
         assert 'id' in final_attrs, "InternalExternal Text Box widget attributes must contain 'id'"
+
         html = [
             '<div class="col-sm-10">',
-            '<span class="note_header active_note" id="internal_external_status_set_internal">Internal Note</span>',
-            '<span class="note_header" id="internal_external_status_set_external">External Note</span>',
+            '<span class="note_header btn{}"'.format(" active_note" if self.internal_external == "internal" else ""),
+            ' id="internal_external_status_set_internal">Internal Note</span>',
+            '<span class="note_header btn{}"'.format(" active_note" if self.internal_external != "internal" else ""),
+            ' id="internal_external_status_set_external">External Note</span>',
             '<textarea{!s}>{!s}</textarea>'.format(flatatt(final_attrs), escape(value)),
             '</div>'
         ]

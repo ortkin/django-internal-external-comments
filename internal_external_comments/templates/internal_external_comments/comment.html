@@ -1,19 +1,19 @@
 {% load static comments %}
-<div id="comment-{{ comment.id }}" class="comment-item well">
-{% block comment_item %}           
-    <h4>
+<div id="comment-{{ comment.id }}" class="comment-item {% if comment.internal_external == 'internal' %}comment-internal{% else %}comment-external{% endif %}">
+{% block comment_item %}
+    <p><strong>
         <span class="comment-name">{{ comment.name }}</span>
         <span class="comment-date">{{ submit_date }}</span>
-        {% if not comment.is_public %}<span class="comment-internal">(Internal)</span>{% endif %}
+        {% if comment.internal_external == "internal" %}<span class="comment-internal">(Internal)</span>{% endif %}
         {% if object.user %}
             {% if object.user.id == user.id %}
                 <span class="comment-edit-span"><a href="#" class='comment-edit-class' data-id='{{ object.id }}'> Edit</a> </span>
             {% endif %}
         {% endif %}
-    </h4>    
-    <div class="comment-text {% if not comment.is_public %}comment-text-internal{% endif %}">{{ comment.comment|linebreaks }}</div>
+    </strong></p>   
+    <div class="comment-text">{{ comment.comment|linebreaks }}</div>
     <div id="comment-edit-{{ comment.id }}" hidden>
-        {% include "internal_external_comments/form.html" with object=comment form=form %}
+        {% include "internal_external_comments/form.html" with object=comment form=form hidemedia=True %}
     </div>
 {% endblock %}
 </div>

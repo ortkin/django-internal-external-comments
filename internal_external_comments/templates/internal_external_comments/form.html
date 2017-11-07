@@ -1,10 +1,14 @@
 {% load static comments %}
-{{ form.media }}
 {% if user.is_authenticated %}
     {% get_comment_form for object as form %}
+    {% if not hidemedia %}{{ form.media }}{% endif %}
     <form id="comment-form-{{ form.target_object.pk }}" data-object-id="{{ form.target_object.pk }}" action="{% comment_form_target %}" method="post" class="{% block form_class %}{{ form.helper.form_class|default:'js-comments-form comments-form form-horizontal' }}{% endblock %}">
         {% csrf_token %}
-        {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+        {% if next %}
+        <input type="hidden" name="next" value="{{ next }}" />
+        {% else %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+        {% endif %}
         {% for field in form %}
             {% if field.is_hidden %}
                 {{ field }}
