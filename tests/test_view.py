@@ -73,7 +73,7 @@ class InternalExternalViewTests(TestCase):
         url = reverse('comments_urls:comments-list')
         request = RequestFactory().get(url)
         view = setup_view(CommentListView(), request)
-        self.assertEquals(view.get_queryset().count(), 1)
+        self.assertEqual(view.get_queryset().count(), 1)
 
     # def test_CommentObjectListView(self):
     #     url = reverse('comments_urls:comments-object-list',
@@ -84,5 +84,5 @@ class InternalExternalViewTests(TestCase):
     #     print(dir(view))
     #     print(view.args)
     #     print(view.kwargs)
-    #     self.assertEquals(view.get_queryset().count(), 1)
+    #     self.assertEqual(view.get_queryset().count(), 1)
     #     print(view.get_queryset())

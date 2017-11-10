@@ -24,11 +24,11 @@ class InternalExternalModelTests(TestCase):
 
     def test_comment_verbose(self):
         cob = comments.get_model()
-        self.assertEquals(cob._meta.verbose_name, 'Comment')
+        self.assertEqual(cob._meta.verbose_name, 'Comment')
 
     def test_comment_verbose_plural(self):
         cob = comments.get_model()
-        self.assertEquals(cob._meta.verbose_name_plural, 'Comments')
+        self.assertEqual(cob._meta.verbose_name_plural, 'Comments')
 
     def test_comment_exists(self):
         self.assertEqual(InternalExternalComment.objects.count(), 1)
