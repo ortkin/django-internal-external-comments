@@ -31,6 +31,14 @@ class InternalExternalComment(CommentAbstractModel):
     class Meta(object):
         verbose_name = 'Comment'
         verbose_name_plural = 'Comments'
+        permissions = (
+            ("can_post_internal", "Can post internal message"),
+            ("can_delete_internal", "Can delete internal message"),
+            ("can_edit_internal", "Can edit internal message"),
+            ("can_view_internal", "Can view internal message"),
+            ("can_delete_external", "Can delete external message"),
+            ("can_edit_external", "Can edit external message"),
+        )
 
     def __str__(self):
         return "{}: {}".format(self.user or self.user_name, self.comment)
