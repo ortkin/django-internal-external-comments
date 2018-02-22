@@ -1,11 +1,13 @@
 from django.test import SimpleTestCase
-from django import forms
-from django_comments.forms import CommentForm
 
 from internal_external_comments.widgets import InternalExternalTextBoxWidget
 
 
 class InternalExternalWidgetTests(SimpleTestCase):
+    """
+    initial widget attributes as defined hard coded:
+        {cols': '40', 'rows': '10', 'class': 'internal_external_editor form-control'}
+    """
     widget = InternalExternalTextBoxWidget()
 
     def test_InternalExternalTextBoxWidget_widget(self):
@@ -22,7 +24,7 @@ class InternalExternalWidgetTests(SimpleTestCase):
         )
         self.assertIn('id="id_thename"', html)
         self.assertIn('name="thename"', html)
-        self.assertIn('rows="3"', html)
+        self.assertIn('rows="10"', html)
         self.assertIn('form-control', html)
 
     def test_InternalExternalTextBoxWidget_class_widget(self):
@@ -34,14 +36,16 @@ class InternalExternalWidgetTests(SimpleTestCase):
         self.assertIn('some test value', html)
         self.assertIn('class="blah', html)
 
-    def test_InternalExternalTextBoxWidget_no_id(self):
-        try:
-            self.widget.render(
-                'thename', 'some test value', attrs={}
+    def test_InternalExternalTextBoxWidget_with_widget_attributes(self):
+        # should only have default attributes set
+        widget = InternalExternalTextBoxWidget(
+            attrs={'cols': 30, 'rows': 13, 'class': 'crappyclass'})
+        html = widget.render(
+            'thename', 'some test value'
             )
-            self.fail("expecting widget to fail without an id")
-        except Exception as e:
-            self.assertEqual("InternalExternal Text Box widget attributes must contain 'id'", e.args[0])
+        self.assertIn('cols="30"', html)
+        self.assertIn('rows="13"', html)
+        self.assertIn('crappyclass', html)
 
     def test_InternalExternalTextBoxWidget_with_attributes(self):
         html = self.widget.render(
@@ -54,7 +58,8 @@ class InternalExternalWidgetTests(SimpleTestCase):
         self.assertIn('internal_external_editor', html)
 
     def test_InternalExternalTextBoxWidget_internal_classes(self):
-        html = self.widget.render(
+        widget = InternalExternalTextBoxWidget(internal_allow=True)
+        html = widget.render(
             'thename', None, attrs={'id': 'id_thename', 'class': 'form-control', 'rows': '5'}
         )
         self.assertIn('internal_external_editor_internal', html)

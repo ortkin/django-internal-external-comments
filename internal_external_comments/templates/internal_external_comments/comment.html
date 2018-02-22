@@ -1,4 +1,5 @@
 {% load static comments %}
+{% if comment.internal_external == "internal" and object.user.has_perm('can_view_internal') %}
 <div id="comment-{{ comment.id }}" class="comment-item {% if comment.internal_external == 'internal' %}comment-internal{% else %}comment-external{% endif %}">
 {% block comment_item %}
     <p><strong>
@@ -6,7 +7,7 @@
         <span class="comment-date">{{ submit_date }}</span>
         {% if comment.internal_external == "internal" %}<span class="comment-internal">(Internal)</span>{% endif %}
         {% if object.user %}
-            {% if object.user.id == user.id %}
+            {% if object.user.id == user.id  or object.user.has_perm('can_edit_external') %}
                 <span class="comment-edit-span"><a href="#" class='comment-edit-class' data-id='{{ object.id }}'> Edit</a> </span>
             {% endif %}
         {% endif %}
@@ -16,4 +17,4 @@
         {% include "internal_external_comments/form.html" with object=comment form=form hidemedia=True %}
     </div>
 {% endblock %}
-</div>
+</div>{% endif %}

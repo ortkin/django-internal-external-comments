@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 
 from internal_external_comments.forms import InternalExternalCommentForm
 
@@ -29,8 +30,8 @@ class InternalExternalFormTests(TestCase):
 
     def test_form_init(self):
         f = InternalExternalCommentForm(self.user)
-        self.assertEqual(f.initial['content_type'], 'auth.user')
-        self.assertEqual(f.initial['object_pk'], "1")
+        self.assertEqual(f.initial['content_type'], ContentType.objects.get_for_model(self.user))
+        self.assertEqual(f.initial['object_pk'], self.user.pk)
         self.assertNotEqual(f.initial['security_hash'], None)
         self.assertNotEqual(f.initial['timestamp'], None)
         # check custom field

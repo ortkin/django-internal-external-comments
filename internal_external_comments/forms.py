@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ImproperlyConfigured
 from django_comments.forms import CommentForm
 
 from .models import InternalExternalComment
@@ -11,23 +12,39 @@ class InternalExternalCommentForm(CommentForm):
     internal_external = forms.CharField(required=True, initial="internal",
                                         widget=forms.HiddenInput())
 
-    def __init__(self, target_object=None, data=None, initial=None, **kwargs):
+    def __init__(self, target_object, data=None, initial=None, request=None, **kwargs):
+        try:
+            self.target_object = target_object
+        except Exception:
+            raise ImproperlyConfigured('Comment form must be passed a target/parent object.')
+        if request is None:
+            raise ImproperlyConfigured('Comment form must be passed the request object.')
+        try:
+            user = request.user
+        except Exception:
+            raise ImproperlyConfigured('Request object passed to comment must contain a user object.')
+        internal_external = 'internal'
         if initial is None:
             initial = {}
-        self.internal_external = initial.get('internal_external')
+        else:
+            internal_external = initial.get('internal_external', 'internal')
         if data is not None:
-            self.internal_external = data.get('internal_external')
-        if self.internal_external is None:
-            self.internal_external = "internal"
+            internal_external = data.get('internal_external', 'internal')
+        if not user.has_perm('internal_external_comments.can_post_internal'):
+            internal_allow = False
+            internal_external = "external"
+        else:
+            internal_allow = True
+        initial.update({'internal_external': internal_external})
         if data is not None:
-            data.update({'internal_external': self.internal_external})
-        initial.update({'internal_external': self.internal_external})
+            data.update({'internal_external': internal_external})
         super(InternalExternalCommentForm, self).__init__(
             target_object=target_object, data=data, initial=initial, **kwargs)
-        self.fields['comment'].widget.internal_external = self.internal_external
+        self.fields['comment'].widget.internal_external = internal_external
+        self.fields['comment'].widget.internal_allow = internal_allow
 
     def get_comment_model(self, *args, **kwargs):
-        return InternalExternalCommentForm
+        return InternalExternalComment
 
     def get_comment_create_data(self, *args, **kwargs):
         data = super(InternalExternalCommentForm, self).get_comment_create_data(*args, **kwargs)

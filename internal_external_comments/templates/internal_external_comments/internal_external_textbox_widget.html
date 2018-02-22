@@ -1,0 +1,11 @@
+<div class="col-sm-10">
+{% if widget.internal_external_allow_internal %}
+<span class="note_header btn {% if widget.internal_external == "internal" %}active_note{% endif %}" id="internal_external_status_set_internal">Internal Note--{{widget.internal_external_allow_internal}}--</span>
+<span class="note_header btn{% if widget.internal_external != "internal" %}active_note{% endif %}" id="internal_external_status_set_external">External Note</span>
+{% else %}
+<span class="note_header active_note" id="">Add Note</span>
+{% endif %}
+<textarea name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+{{ widget }}
+</div>

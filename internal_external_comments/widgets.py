@@ -6,7 +6,8 @@ from django.utils.safestring import mark_safe
 
 
 class InternalExternalTextBoxWidget(forms.Textarea):
-
+    template_name = 'internal_external_comments/internal_external_textbox_widget.html'
+    
     def __init__(self, *args, **kwargs):
         self.internal_external = kwargs.pop('internal_external', "internal")
         super(InternalExternalTextBoxWidget, self).__init__(*args, **kwargs)
@@ -43,6 +44,33 @@ class InternalExternalTextBoxWidget(forms.Textarea):
             '</div>'
         ]
         return mark_safe('\n'.join(html))
+
+    # def __init__(self, internal_external="internal", internal_allow=False, attrs=None):
+    #     self.internal_external = internal_external
+    #     self.internal_allow = internal_allow
+    #     default_attrs = {'cols': '40', 'rows': '10',
+    #                      'class': 'internal_external_editor form-control'}
+    #     if attrs:
+    #         default_attrs.update(attrs)
+    #     super().__init__(default_attrs)
+
+    # def get_context(self, name, value, attrs):
+    #     context = super().get_context(name, value, attrs)
+    #     context['widget']['internal_external_allow_internal'] = self.internal_allow
+    #     return context
+
+    # def build_attrs(self, base_attrs, extra_attrs=None, *args, **kwargs):
+    #     attrs = super().build_attrs(base_attrs, extra_attrs, *args, **kwargs)
+    #     if 'form-control' not in attrs.get('class'):
+    #         # add in form control bootstrap tag if not there just to get some initial styling
+    #         attrs['class'] = ' '.join(attrs['class'].split(' ') + ['form-control'])
+    #     if 'internal_external_editor' not in attrs.get('class'):
+    #         # make sure internal_external_editor class exists
+    #         attrs['class'] = ' '.join(attrs['class'].split(' ') + ['internal_external_editor'])
+    #     if self.internal_external is 'internal' and self.internal_allow:
+    #         attrs['class'] = ' '.join(attrs['class'].split(
+    #             ' ') + ['internal_external_editor_internal'])
+    #     return attrs
 
     class Media:
         css = {

@@ -2,6 +2,7 @@ from django.db import models
 from django_comments.abstracts import CommentAbstractModel
 from django_comments.managers import CommentManager
 from django.contrib.sites.models import Site
+from django.urls import reverse
 
 
 class InternalExternalCommentManager(CommentManager):
@@ -46,3 +47,23 @@ class InternalExternalComment(CommentAbstractModel):
     @property
     def is_internal(self):
         return self.internal_external == self.INTERNAL
+
+    @property
+    def data(self):
+        return {
+            "pk": self.pk,
+            "comment": self.comment,
+            "user": self.user.username if self.user else "",
+            "object_pk": self.object_pk,
+            "content_type_id": self.content_type_id,
+            "submit_date": str(self.submit_date),
+        }
+
+    def get_content_object_url(self):
+        """
+        Get a URL suitable for redirecting to the content object.
+        """
+        return reverse(
+            "comments-url-redirect",
+            args=(self.content_type_id, self.object_pk)
+        )

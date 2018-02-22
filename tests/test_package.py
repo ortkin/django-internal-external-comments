@@ -35,26 +35,6 @@ class InternalExternalApps(SimpleTestCase):
 class InternalExternalURLTests(SimpleTestCase):
     client = Client()
 
-    def test_create(self):
-        url = reverse('comments_urls:comments-create')
-        self.assertEqual(url, '/create/')
-
-    def test_create_resolver(self):
-        found = resolve('/create/')
-        self.assertEqual(found.view_name, 'comments_urls:comments-create')
-
-    def test_detail(self):
-        url = reverse('comments_urls:comments-detail', kwargs={'pk': 1})
-        self.assertEqual(url, '/detail/1/')
-
-    def test_update(self):
-        url = reverse('comments_urls:comments-update', kwargs={'pk': 1})
-        self.assertEqual(url, '/update/1/')
-
-    def test_delete(self):
-        url = reverse('comments_urls:comments-delete', kwargs={'pk': 1})
-        self.assertEqual(url, '/delete/1/')
-
     def test_list(self):
         url = reverse('comments_urls:comments-list')
         self.assertEqual(url, '/list/')
